@@ -29,6 +29,8 @@
 #include "l2vpn.h"
 #include "af.h"
 
+static const char tstr[] = " [|LDP]";
+
 /*
  * ldp common header
  *
@@ -486,7 +488,7 @@ ldp_tlv_print(netdissect_options *ndo,
 	break;
 
     case LDP_TLV_FT_SESSION:
-	TLV_TCHECK(8);
+	TLV_TCHECK(12);
 	ft_flags = EXTRACT_16BITS(tptr);
 	ND_PRINT((ndo, "\n\t      Flags: [%sReconnect, %sSave State, %sAll-Label Protection, %s Checkpoint, %sRe-Learn State]",
 	       ft_flags&0x8000 ? "" : "No ",
@@ -534,7 +536,7 @@ ldp_tlv_print(netdissect_options *ndo,
     return(tlv_len+4); /* Type & Length fields not included */
 
 trunc:
-    ND_PRINT((ndo, "\n\t\t packet exceeded snapshot"));
+    ND_PRINT((ndo, "%s", tstr));
     return 0;
 
 badtlv:
@@ -686,7 +688,7 @@ ldp_pdu_print(netdissect_options *ndo,
     }
     return pdu_len+4;
 trunc:
-    ND_PRINT((ndo, "\n\t\t packet exceeded snapshot"));
+    ND_PRINT((ndo, "%s", tstr));
     return 0;
 }
 
